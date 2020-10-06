@@ -1,0 +1,328 @@
+//variables------------------------------------------------------------------
+$blk : #000;
+$darkGrey : #2b2b2b;
+$active_darkGrey : #818181;
+$lightGrey : #9c9c9c;
+$active_lightGrey : #e9e9e9;
+$wht : #fff;
+$org : #ff8200;
+$active_org : #ffdfbd;
+
+$objWidth : 448px;
+$objHeight : 720px;
+
+$xl : "xl";
+$lg : "lg";
+$md : "md";
+$sm : "sm";
+$xs : "xs";
+
+//mixin----------------------------------------------------------------------
+@mixin mq($arg) {
+    @if $arg==$lg {
+        @media screen and (min-width: 1025px) {
+            @content;
+        }
+    }
+
+    @else if $arg==$md {
+        @media screen and (min-width: 600px) and (max-width: 1024px) {
+            @content;
+        }
+    }
+
+    @else if $arg==$sm {
+        @media screen and (min-width: 350px) and (max-width: 599px) {
+            @content;
+        }
+    }
+
+    @else if $arg==$xs {
+        @media screen and (max-width: 349px) {
+            @content;
+        }
+    }
+}
+
+//Style----------------------------------------------------------------------
+* {
+    box-sizing: border-box;
+    appearance: none;
+    font-family: 'Oswald', sans-serif;
+}
+
+html,
+body,
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    margin: 0;
+    user-select: none;
+}
+
+#app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#calculater {
+    width: $objWidth;
+    height: $objHeight;
+    background-color: $blk;
+    border-radius: 30px;
+
+    #mathWindow {
+        width: $objWidth;
+        height: 160px;
+        background-color: $darkGrey;
+        margin-top: 40px;
+        padding: 0 40px;
+
+        .inner {
+            width: $objWidth - 80px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            flex-direction: column;
+
+            p {
+                color: $wht;
+                margin: 0;
+                text-align: right;
+                line-height: 1.2em;
+            
+    
+                &:first-child {
+                    font-size: 4rem;
+                }
+    
+                &:nth-child(2){
+                    font-size: 7rem;
+                }
+
+                &::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+                    display:none;
+                }
+            }
+        }
+    }
+
+
+    #Controls {
+        width: 100%;
+        height: $objHeight - 200px;
+        padding: 16px 40px 40px 40px;
+        display: flex;
+
+        button {
+            width: 80px;
+            height: 80px;
+            outline: none;
+            border: none;
+            border-radius: 50%;
+            margin: 0 16px 16px 0;
+            cursor: pointer;
+            position: relative;
+            transition: .1s;
+            color: #fff;
+            font-size: 4rem;
+        }
+
+        .l_content {
+            .l_content_top {
+                display: flex;
+                button{
+                    background-color: $lightGrey;
+    
+                    &:active {
+                        background-color: $active_lightGrey;
+                    }
+
+                    &:nth-child(2) {
+                        pointer-events: none;
+                        user-select: none;
+                        opacity: 0;
+                    }
+        
+                    &:nth-child(3) {
+                        pointer-events: none;
+                        user-select: none;
+                        opacity: 0;
+                    }
+                }
+            }
+
+            .l_content_bottom {
+                button{
+                    background-color: $darkGrey;
+    
+                    &:active {
+                        background-color: $active_darkGrey;
+                    }
+
+                    &:nth-last-child(2) {
+                        width: 176px;
+                        border-radius: 80px;
+                        text-align: left;
+                        padding-left: 30px;
+                    }
+                }
+            }
+        }
+
+        .r_content {
+            button {
+                margin: 0 0 16px 0;
+                background-color: $org;
+                font-size: 5rem;
+                
+                &:active {
+                    background-color: $active_org;
+                }
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+@include mq(sm) {
+
+    #calculater {
+        width: $objWidth - 148px;
+        height: $objHeight - 220px;
+        background-color: $blk;
+        border-radius: 20px;
+        transition: .3s;
+    
+        #mathWindow {
+            width: $objWidth - 148px;
+            height: 100px;
+            background-color: $darkGrey;
+            margin-top: 30px;
+            padding: 0 20px;
+            transition: .3s;
+    
+            .inner {
+                width: $objWidth - 188px;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                flex-direction: column;
+    
+                p {
+                    color: $wht;
+                    margin: 0;
+                    text-align: right;
+                
+        
+                    &:first-child {
+                        font-size: 2rem;
+                    }
+        
+                    &:nth-child(2){
+                        font-size:3rem;
+                    }
+    
+                    &::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+                        display:none;
+                    }
+                }
+            }
+        }
+    
+    
+        #Controls {
+            width: 300px;
+            height: $objHeight - 350px;
+            padding: 20px 20px 20px 20px;
+            display: flex;
+    
+            button {
+                width: 50px;
+                height: 50px;
+                outline: none;
+                border: none;
+                border-radius: 50%;
+                margin: 0 20px 20px 0;
+                cursor: pointer;
+                position: relative;
+                transition: .1s;
+                color: #fff;
+                font-size: 3rem;
+                transition: .3s;
+                padding: none;
+            }
+    
+            .l_content {
+                .l_content_top {
+                    display: flex;
+                    button{
+                        background-color: $lightGrey;
+        
+                        &:active {
+                            background-color: $active_lightGrey;
+                        }
+    
+                        &:nth-child(2) {
+                            pointer-events: none;
+                            user-select: none;
+                            opacity: 0;
+                        }
+            
+                        &:nth-child(3) {
+                            pointer-events: none;
+                            user-select: none;
+                            opacity: 0;
+                        }
+                    }
+                }
+    
+                .l_content_bottom {
+                    button{
+                        background-color: $darkGrey;
+        
+                        &:active {
+                            background-color: $active_darkGrey;
+                        }
+    
+                        &:nth-last-child(2) {
+                            width: 120px;
+                            border-radius: 80px;
+                            text-align: left;
+                            padding-left: 15px;
+                        }
+                    }
+                }
+            }
+    
+            .r_content {
+                button {
+                    margin: 0 0 20px 0;
+                    background-color: $org;
+                    font-size: 3rem;
+                    
+                    &:active {
+                        background-color: $active_org;
+                    }
+    
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
