@@ -21,7 +21,7 @@ const MathWindow: React.FC<Props> = (props) => {
     return (
         <div id="mathWindow">
             <div className="inner">
-                <p>{props.formulaState}</p>
+                <p>{props.formulaState.replace(/\*/g, "×").replace(/\//g, "÷")}</p>
                 <p>{props.dis_numState}</p>
             </div>
         </div>

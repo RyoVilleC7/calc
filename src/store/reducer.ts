@@ -85,13 +85,13 @@ export const Reducer = (state = initialState, action)=>{
                 finish: true
             };
 
-        case 'TRUE_MATHLIFECYCLE':
+        case 'TRUE_LIFECYCLE':
             return {
                 ...state,
                 lifeCycle: true
             }
 
-        case 'FALSE_MATHLIFECYCLE':
+        case 'FALSE_LIFECYCLE':
             return {
                 ...state,
                 lifeCycle: false

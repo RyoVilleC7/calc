@@ -29,11 +29,11 @@ type dispatchByProps = {
 
 type Props = stateByProps & dispatchByProps;
 
-let mathArray = []; //数式を格納
-let result: string = ''; //結合した配列を格納
-let preserve: string = ''; //前回の値を保存
-let x: string = ''; //数式を保持
-let start = false;
+let mathArray: string[] = [];   //数式を格納
+let preserve: string = '';    //前回の値を保存
+let result: string = '';    //結合した配列を格納
+let x: string = '';     //数式を保持
+let start: boolean = false;
 let isFloat: boolean = false;
   
 const Controls: React.FC<Props> = (props) => {
@@ -60,6 +60,7 @@ const Controls: React.FC<Props> = (props) => {
                     preserve = Number(preserve).toLocaleString() + n;
                     props.dis_num(preserve);
                     props.formula(x + preserve);
+                    props.operator(false);
 
                 }else {
 
@@ -81,7 +82,7 @@ const Controls: React.FC<Props> = (props) => {
 
                 if(n === '.'){
 
-                    if(preserve.indexOf('.') !== 1){
+                    if(preserve.indexOf('.') === -1){
 
                         preserve = Number(preserve.replace(/,/g, "")).toLocaleString() + '.';
                         props.dis_num(preserve);
@@ -115,35 +116,41 @@ const Controls: React.FC<Props> = (props) => {
 
             if(props.operatorState){
 
-                start = true;
+                preserve += n;start = true;
                 props.lifeCycle(true); //計算開始
-    
-                preserve += n;
+                props.operator(false);
                 props.dis_num(Number(preserve).toLocaleString());
                 props.formula(preserve);
-                props.operator(false);
 
             }else {
 
                 if(n === '.'){
 
-                    start = true;
-                    props.lifeCycle(true); //計算開始
-            
-                    preserve = Number(preserve).toLocaleString() + n;
+                    //初期化
+                    preserve = '';
+                    mathArray = [];
+                    x = '';
+                    result = '';
+
+                    preserve = Number(preserve).toLocaleString() + n;start = true;
+
+                    props.lifeCycle(true);
                     props.dis_num(preserve);
                     props.formula(preserve);
 
                 }else {
-
-                    start = true;
-                    props.lifeCycle(true); //計算開始
-                    preserve = ''; //前回の値を初期化
+                    
+                    //初期化
+                    preserve = '';
                     mathArray = [];
                     x = '';
                     result = '';
-            
+
+
                     preserve += n;
+
+                    start = true;
+                    props.lifeCycle(true);
                     props.dis_num(Number(preserve).toLocaleString());
                     props.formula(preserve);
                 }
@@ -167,8 +174,8 @@ const Controls: React.FC<Props> = (props) => {
                     x += mathArray[i];
                 }
 
-                props.formula(x + o);
                 props.operator(true);
+                props.formula(x + o);
 
             }else {
 
@@ -181,23 +188,25 @@ const Controls: React.FC<Props> = (props) => {
 
                 preserve = o;
 
-                props.formula(x + o);
                 props.operator(true);
+                props.formula(x + o);
             }
 
         }else {
 
             if(!start){
+
                 if(o === '-'){
-                    start = true;
+
                     preserve = o;
-                    props.formula(preserve);
-                    props.operator(true);
+
+                    start = true;
                     props.lifeCycle(true);
+                    props.operator(true);
+                    props.formula(preserve);
                 }
                 
             }else {
-                console.log(result)
 
                 mathArray = [];
                 preserve = o;
@@ -221,7 +230,6 @@ const Controls: React.FC<Props> = (props) => {
 
                 }else {
 
-                    console.log(preserve)
                     mathArray.push(Number(preserve.replace(/,/g, "")).toLocaleString());
                     preserve = '';
 
@@ -250,6 +258,7 @@ const Controls: React.FC<Props> = (props) => {
                     for (let i = 0; i < mathArray.length; i++) {
                         result += mathArray[i];
                     }
+
                     props.dis_num(Number(eval(result)).toLocaleString());
 
                     //fomulaに代入
@@ -278,8 +287,8 @@ const Controls: React.FC<Props> = (props) => {
                         result += mathArray[i];
                     }
 
-                    props.formula(result + '=');
                     props.lifeCycle(false);
+                    props.formula(result + '=');
                 }
             }
     };
@@ -287,10 +296,10 @@ const Controls: React.FC<Props> = (props) => {
   
     //clear--------------------------------------------------------
     const clear = function(): void{
-        props.formula('0'),
-        props.dis_num('0'),
-        props.operator(false),
-        props.lifeCycle(false)
+        props.lifeCycle(false);
+        props.operator(false);
+        props.dis_num('0');
+        props.formula('0');
         mathArray = [];
         preserve = '';
         result = '';
@@ -352,7 +361,7 @@ const mapDispatchToProps = (dispatch: Dispatch): dispatchByProps => {
         dis_num: (arg) => { dispatch( {type: 'DISPLAY_NUM_CHANGE', dis_num: arg} ) },
         float: (arg) => { arg ? dispatch( {type: 'TRUE_FLOAT'}) : dispatch( {type: 'FALSE_FLOAT'}) },
         operator: (arg) => { arg ? dispatch( {type: 'TRUE_OPERATOR'}) : dispatch( {type: 'FALSE_OPERATOR'}) },
-        lifeCycle: (arg) => { arg ? dispatch( {type: 'TRUE_MATHLIFECYCLE'}) : dispatch( {type: 'FALSE_MATHLIFECYCLE'}) },
+        lifeCycle: (arg) => { arg ? dispatch( {type: 'TRUE_LIFECYCLE'}) : dispatch( {type: 'FALSE_LIFECYCLE'}) },
     }
 };
 
