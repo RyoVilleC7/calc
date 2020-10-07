@@ -1,11 +1,10 @@
-import { any } from 'prop-types';
 //React
 import * as React from 'react';
 
 //Redux
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
-import store, { AppState } from '../../store/store';
+import { AppState } from '../../store/store';
 
 //Component
 import Button from '../parts/button';
@@ -33,10 +32,9 @@ type Props = stateByProps & dispatchByProps;
 let mathArray = []; //数式を格納
 let result: string = ''; //結合した配列を格納
 let preserve: string = ''; //前回の値を保存
-let floatPreserve: string = '';
 let x: string = ''; //数式を保持
-let float: boolean = false; //小数点の有無
 let start = false;
+let isFloat: boolean = false;
   
 const Controls: React.FC<Props> = (props) => {
   
@@ -88,14 +86,27 @@ const Controls: React.FC<Props> = (props) => {
                         preserve = Number(preserve.replace(/,/g, "")).toLocaleString() + '.';
                         props.dis_num(preserve);
                         props.formula(x + preserve);
+                        isFloat = true;
                     }
                     
                 }else {
+                    
+                    if(n === '0' && isFloat){
 
-                    preserve += n;
+                        preserve = Number(preserve.replace(/,/g, "")).toLocaleString() + '.0';
+                        props.dis_num(preserve);
+                        props.formula(x + preserve);
+                        isFloat = false;
+                    
+                    }else {
+
+                        preserve += n;
     
-                    props.dis_num(Number(preserve.replace(/,/g, "")).toLocaleString());
-                    props.formula(x + Number(preserve.replace(/,/g, "")).toLocaleString());
+                        props.dis_num(Number(preserve.replace(/,/g, "")).toLocaleString());
+                        props.formula(x + Number(preserve.replace(/,/g, "")).toLocaleString());
+                        isFloat = false;
+
+                    }
 
                 }
             }
@@ -186,13 +197,14 @@ const Controls: React.FC<Props> = (props) => {
                 }
                 
             }else {
+                console.log(result)
 
                 mathArray = [];
                 preserve = o;
 
-                mathArray.push(Number(eval(result)).toLocaleString());
-                props.dis_num(Number(eval(result)).toLocaleString());
-                props.formula(Number(eval(result)).toLocaleString() + preserve);
+                mathArray.push(Number(eval(result.replace(/,/g, ""))).toLocaleString());
+                props.dis_num(Number(eval(result.replace(/,/g, ""))).toLocaleString());
+                props.formula(Number(eval(result.replace(/,/g, ""))).toLocaleString() + preserve);
                 props.operator(true);
                 props.lifeCycle(true);
             }
@@ -280,12 +292,13 @@ const Controls: React.FC<Props> = (props) => {
         props.operator(false),
         props.lifeCycle(false)
         mathArray = [];
-        result = '';
         preserve = '';
-        float = false;
+        result = '';
         x = '';
         start = false;
+        isFloat = false;
     };
+    
 
     //button-------------------------------------------------------
 
@@ -313,7 +326,7 @@ const Controls: React.FC<Props> = (props) => {
             </div>
 
             <div className="r_content">
-                {operateViewData.map( (value, index, key) => {
+                {operateViewData.map( (value, index, i) => {
                     return <Button data={operateViewData[index]} internalData={operateInternalData[index]} func={() => operator(operateInternalData[index])} />
                 })}
                 <Button data={'='} internalData={'='} func={() => equal()} />
