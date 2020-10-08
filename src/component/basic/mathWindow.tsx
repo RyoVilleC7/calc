@@ -10,7 +10,6 @@ import { AppState } from '../../store/store';
 type stateByProps = {
     formulaState: string;
     dis_numState: string;
-    totalState: number;
     operatorState: boolean;
 };
 
@@ -32,7 +31,6 @@ const mapStateToProps = (state: AppState): stateByProps => {
     return {
         formulaState: state.Reducer.formula,
         dis_numState: state.Reducer.dis_num,
-        totalState: state.Reducer.total,
         operatorState: state.Reducer.operatorState,
     }
 };

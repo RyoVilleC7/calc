@@ -12,34 +12,39 @@ import Button from '../parts/button';
 /////////////////////////////////////////////////////////////////
 
 type stateByProps = {
+    startState: boolean;
+    lifeCycleState: boolean;
+    operatorState: boolean;
+    floatState: boolean;
     formulaState: string;
     dis_numState: string;
-    floatState: boolean;
-    operatorState: boolean;
-    lifeCycleState: boolean;
 };
 
 type dispatchByProps = {
+    start: (arg: boolean) => void;
+    lifeCycle: (arg: boolean) => void;
+    operator: (arg: boolean) => void;
+    float: (arg: boolean) => void;
     formula: (arg: string) => void;
     dis_num: (arg: string) => void;
-    float: (arg: boolean) => void;
-    operator: (arg: boolean) => void;
-    lifeCycle: (arg: boolean) => void;
 };
 
 type Props = stateByProps & dispatchByProps;
 
 let mathArray: string[] = [];   //数式を格納
 let preserve: string = '';    //前回の値を保存
+let f_preserve: string = '';     //数式を保持
 let result: string = '';    //結合した配列を格納
-let x: string = '';     //数式を保持
-let start: boolean = false;
-let isFloat: boolean = false;
+let lengthCheck: number = 0;    //桁数チェック用の補助変数
   
 const Controls: React.FC<Props> = (props) => {
   
-    //numbers--------------------------------------------------------
+
+    //numbers------------------------------------------------------
     const addNum = function(n: string): void{
+
+        //preserve内の数値が9桁以上の場合は入力禁止
+        if(!(lengthCheck >= 9)){
 
         //計算開始の判定
         if(props.lifeCycleState){
@@ -51,30 +56,32 @@ const Controls: React.FC<Props> = (props) => {
                     
                     mathArray.push(preserve); //値を保存
                     preserve = ''; //前回の値を初期化
-                    x = '';
+                    f_preserve = '';
                     
                     for (let i = 0; i < mathArray.length; i++) {
-                        x += mathArray[i];
+                        f_preserve += mathArray[i];
                     }
 
                     preserve = Number(preserve).toLocaleString() + n;
+
                     props.dis_num(preserve);
-                    props.formula(x + preserve);
+                    props.formula(f_preserve + preserve);
                     props.operator(false);
 
                 }else {
 
                     mathArray.push(preserve); //値を保存
                     preserve = ''; //前回の値を初期化
-                    x = '';
+                    f_preserve = '';
                     
                     for (let i = 0; i < mathArray.length; i++) {
-                        x += mathArray[i];
+                        f_preserve += mathArray[i];
                     }
-    
+
                     preserve += n;
+
                     props.dis_num(Number(preserve).toLocaleString());
-                    props.formula(x + Number(preserve).toLocaleString());
+                    props.formula(f_preserve + Number(preserve).toLocaleString());
                     props.operator(false);
                 }
 
@@ -85,28 +92,32 @@ const Controls: React.FC<Props> = (props) => {
                     if(preserve.indexOf('.') === -1){
 
                         preserve = Number(preserve.replace(/,/g, "")).toLocaleString() + '.';
+
                         props.dis_num(preserve);
-                        props.formula(x + preserve);
-                        isFloat = true;
+                        props.formula(f_preserve + preserve);
+                        props.float(true);
                     }
                     
                 }else {
                     
-                    if(n === '0' && isFloat){
+                    if(n === '0' && props.floatState){
 
                         preserve = Number(preserve.replace(/,/g, "")).toLocaleString() + '.0';
+
                         props.dis_num(preserve);
-                        props.formula(x + preserve);
-                        isFloat = false;
+                        props.formula(f_preserve + preserve);
+                        props.float(false);
                     
                     }else {
 
                         preserve += n;
-    
-                        props.dis_num(Number(preserve.replace(/,/g, "")).toLocaleString());
-                        props.formula(x + Number(preserve.replace(/,/g, "")).toLocaleString());
-                        isFloat = false;
 
+                        lengthCheck = preserve.toString().length;
+                        console.log(lengthCheck);
+        
+                        props.dis_num(Number(preserve.replace(/,/g, "")).toLocaleString());
+                        props.formula(f_preserve + Number(preserve.replace(/,/g, "")).toLocaleString());
+                        props.float(false);
                     }
 
                 }
@@ -116,7 +127,9 @@ const Controls: React.FC<Props> = (props) => {
 
             if(props.operatorState){
 
-                preserve += n;start = true;
+                preserve += n;
+                
+                props.start(true);
                 props.lifeCycle(true); //計算開始
                 props.operator(false);
                 props.dis_num(Number(preserve).toLocaleString());
@@ -129,11 +142,12 @@ const Controls: React.FC<Props> = (props) => {
                     //初期化
                     preserve = '';
                     mathArray = [];
-                    x = '';
+                    f_preserve = '';
                     result = '';
 
-                    preserve = Number(preserve).toLocaleString() + n;start = true;
-
+                    preserve = Number(preserve).toLocaleString() + n;
+                    
+                    props.start(true);
                     props.lifeCycle(true);
                     props.dis_num(preserve);
                     props.formula(preserve);
@@ -143,22 +157,24 @@ const Controls: React.FC<Props> = (props) => {
                     //初期化
                     preserve = '';
                     mathArray = [];
-                    x = '';
+                    f_preserve = '';
                     result = '';
 
 
                     preserve += n;
 
-                    start = true;
+                    props.start(true);
                     props.lifeCycle(true);
                     props.dis_num(Number(preserve).toLocaleString());
                     props.formula(preserve);
                 }
             }
         };
+        }
       };
   
-    //operator--------------------------------------------------------
+
+    //operator-----------------------------------------------------
     const operator = function(o: string): void{
 
         if(props.lifeCycleState){
@@ -168,39 +184,41 @@ const Controls: React.FC<Props> = (props) => {
                 //演算子入力時の処理
                 mathArray.push(Number(preserve.replace(/,/g, "")).toLocaleString()); //値を保存
                 preserve = o;
-                x = '';
+                f_preserve = '';
+                lengthCheck = 0;
                 
                 for (let i = 0; i < mathArray.length; i++) {
-                    x += mathArray[i];
+                    f_preserve += mathArray[i];
                 }
 
                 props.operator(true);
-                props.formula(x + o);
+                props.formula(f_preserve + o);
 
             }else {
 
                 //演算子の次に演算子が入力された際の処理
-                x = '';
+                f_preserve = '';
+                lengthCheck = 0;
                 
                 for (let i = 0; i < mathArray.length; i++) {
-                    x += mathArray[i];
+                    f_preserve += mathArray[i];
                 }
 
                 preserve = o;
 
                 props.operator(true);
-                props.formula(x + o);
+                props.formula(f_preserve + o);
             }
 
         }else {
 
-            if(!start){
+            if(!props.startState){
 
                 if(o === '-'){
 
                     preserve = o;
 
-                    start = true;
+                    props.start(true);
                     props.lifeCycle(true);
                     props.operator(true);
                     props.formula(preserve);
@@ -226,9 +244,7 @@ const Controls: React.FC<Props> = (props) => {
 
             if(props.lifeCycleState){
 
-                if(props.operatorState){
-
-                }else {
+                if(!props.operatorState){
 
                     mathArray.push(Number(preserve.replace(/,/g, "")).toLocaleString());
                     preserve = '';
@@ -259,7 +275,12 @@ const Controls: React.FC<Props> = (props) => {
                         result += mathArray[i];
                     }
 
-                    props.dis_num(Number(eval(result)).toLocaleString());
+                    lengthCheck = eval(result)
+                    if(lengthCheck.toString().length >= 10){
+                        props.dis_num(Number(eval(result)).toExponential());
+                    }else {
+                        props.dis_num(Number(eval(result)).toLocaleString());
+                    }
 
                     //fomulaに代入
                     result = '';
@@ -287,25 +308,98 @@ const Controls: React.FC<Props> = (props) => {
                         result += mathArray[i];
                     }
 
+                    lengthCheck = 0;
                     props.lifeCycle(false);
                     props.formula(result + '=');
+
+            }else {
+
+                //符号の次にイコールが押された場合
+                mathArray.push(preserve, mathArray[mathArray.length - 1]);
+                preserve = ''
+
+                //dis_numに代入
+                result = '';
+                mathArray = mathArray.map((value) => {
+                    if (!(value === "+")){
+                        if(!(value === "-")){
+                            if (!(value === "*")){
+                                if (!(value === "/")){
+                                    return value.replace(/,/g, "");
+                                } else {
+                                    return value;
+                                }
+                            } else {
+                                return value;
+                            }
+                        } else {
+                            return value;
+                        }
+                    } else {
+                            return value;
+                      }
+                  });
+
+                  for (let i = 0; i < mathArray.length; i++){
+                      result += mathArray[i];
+                  }
+
+                lengthCheck = eval(result)
+                if(lengthCheck.toString().length >= 10){
+                    props.dis_num(Number(eval(result)).toExponential());
+                }else {
+                    props.dis_num(Number(eval(result)).toLocaleString());
                 }
+                
+
+                //fomulaに代入
+                result = '';
+                mathArray = mathArray.map((value) => {
+                    if (!(value === "+")) {
+                        if(!(value === "-")){
+                            if (!(value === "*")) {
+                                if (!(value === "/")) {
+                                    return Number(value).toLocaleString();
+                                } else {
+                                    return value;
+                                }
+                            } else {
+                                return value;
+                            }
+                        } else {
+                            return value;
+                        }
+                    } else {
+                            return value;
+                      }
+                  });
+            
+                for (let i = 0; i < mathArray.length; i++) {
+                    result += mathArray[i];
+                }
+
+                lengthCheck = 0;
+                props.lifeCycle(false);
+                props.formula(result + '=');
+
             }
+        }
     };
     
   
     //clear--------------------------------------------------------
     const clear = function(): void{
+        props.start(false);
         props.lifeCycle(false);
         props.operator(false);
+        props.float(false);
         props.dis_num('0');
         props.formula('0');
         mathArray = [];
         preserve = '';
         result = '';
-        x = '';
-        start = false;
-        isFloat = false;
+        f_preserve = '';
+        lengthCheck = 0;
     };
     
 
@@ -347,21 +441,23 @@ const Controls: React.FC<Props> = (props) => {
 
   const mapStateToProps = (state: AppState): stateByProps => {
     return {
+        startState: state.Reducer.start,
+        lifeCycleState: state.Reducer.lifeCycle,
+        operatorState: state.Reducer.operatorState,
+        floatState: state.Reducer.float,
         formulaState: state.Reducer.formula,
         dis_numState: state.Reducer.dis_num,
-        floatState: state.Reducer.float,
-        operatorState: state.Reducer.operatorState,
-        lifeCycleState: state.Reducer.lifeCycle
     }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): dispatchByProps => {
     return {
+        start: (arg) => { arg ? dispatch( {type: 'TRUE_START'} ) : dispatch( {type: 'FALSE_START'} ) },
+        lifeCycle: (arg) => { arg ? dispatch( {type: 'TRUE_LIFECYCLE'}) : dispatch( {type: 'FALSE_LIFECYCLE'} ) },
+        operator: (arg) => { arg ? dispatch( {type: 'TRUE_OPERATOR'}) : dispatch( {type: 'FALSE_OPERATOR'} ) },
+        float: (arg) => { arg ? dispatch( {type: 'TRUE_FLOAT'}) : dispatch( {type: 'FALSE_FLOAT'} ) },
         formula: (arg) => { dispatch( {type: 'FORMULA_CHANGE', formula: arg} ) },
         dis_num: (arg) => { dispatch( {type: 'DISPLAY_NUM_CHANGE', dis_num: arg} ) },
-        float: (arg) => { arg ? dispatch( {type: 'TRUE_FLOAT'}) : dispatch( {type: 'FALSE_FLOAT'}) },
-        operator: (arg) => { arg ? dispatch( {type: 'TRUE_OPERATOR'}) : dispatch( {type: 'FALSE_OPERATOR'}) },
-        lifeCycle: (arg) => { arg ? dispatch( {type: 'TRUE_LIFECYCLE'}) : dispatch( {type: 'FALSE_LIFECYCLE'}) },
     }
 };
 

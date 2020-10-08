@@ -2,6 +2,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+//IE11-polyfill
+import 'react-app-polyfill/ie11';
+
 //Style
 import './style/style.scss';
 
@@ -15,9 +18,7 @@ import Calculater from './component/calculater';
 /////////////////////////////////////////////////////////////////
 
 const App: React.FC = () => {
-
     return <Calculater />;
-
 };
 
 ReactDOM.render(
