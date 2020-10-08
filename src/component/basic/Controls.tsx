@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 import { AppState } from '../../store/store';
 
-//Component
+//Outside Components
 import Button from '../parts/button';
 
 /////////////////////////////////////////////////////////////////
@@ -31,12 +31,16 @@ type dispatchByProps = {
 
 type Props = stateByProps & dispatchByProps;
 
+
+//内部データ処理用の変数-----------------------------------------------
 let mathArray: string[] = [];   //数式を格納
 let preserve: string = '';    //前回の値を保存
 let f_preserve: string = '';     //数式を保持
 let result: string = '';    //結合した配列を格納
 let lengthCheck: number = 0;    //桁数チェック用の補助変数
-  
+
+
+//Component
 const Controls: React.FC<Props> = (props) => {
   
 
@@ -387,7 +391,7 @@ const Controls: React.FC<Props> = (props) => {
     };
     
   
-    //clear--------------------------------------------------------
+    //clear関数--------------------------------------------------------
     const clear = function(): void{
         props.start(false);
         props.lifeCycle(false);

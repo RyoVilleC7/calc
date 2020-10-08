@@ -1,7 +1,7 @@
 //React
 import * as React from 'react';
 
-//Component
+//Outside Components
 import MathWindow from './basic/mathWindow';
 import Controls from './basic/Controls';
 

@@ -12,18 +12,14 @@ import './style/style.scss';
 import store from './store/store';
 import { Provider } from 'react-redux';
 
-//Component
+//Outside Components
 import Calculater from './component/calculater';
 
 /////////////////////////////////////////////////////////////////
 
-const App: React.FC = () => {
-    return <Calculater />;
-};
-
 ReactDOM.render(
     <Provider store={store}>
-        <App/>
+        <Calculater />
     </Provider>,
     document.querySelector('#app')
 );

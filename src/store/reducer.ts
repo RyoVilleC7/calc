@@ -3,8 +3,8 @@ interface initialState {
     lifeCycle: boolean;
     operatorState: boolean;
     float: boolean;
-    formula: string;
     dis_num: string;
+    formula: string;
 }
 
 type Action = {
@@ -19,10 +19,9 @@ const initialState: initialState = {
     lifeCycle: false,   //計算式のサイクル
     operatorState: false,   //符号保有チェック
     float: false,   //小数点保有チェック
-    formula: '0',   //ディスプレイに表示する数字
-    dis_num: '0'    //ディスプレイに表示する数式
+    formula: '0',   //ディスプレイに表示する数式
+    dis_num: '0'    //ディスプレイに表示する数値
 }
-
 
 //Reducer
 export const Reducer = (state = initialState, action: Action)=>{
@@ -32,11 +31,13 @@ export const Reducer = (state = initialState, action: Action)=>{
                 ...state,
                 formula: action.formula
             }
+            
         case 'DISPLAY_NUM_CHANGE':
             return {
                 ...state,
                 dis_num: action.dis_num
             }
+
         case 'TRUE_FLOAT':
             return {
                 ...state,
@@ -48,6 +49,7 @@ export const Reducer = (state = initialState, action: Action)=>{
                 ...state,
                 float: false
             }
+
         case 'TRUE_OPERATOR':
             return {
                 ...state,
@@ -59,6 +61,7 @@ export const Reducer = (state = initialState, action: Action)=>{
                 ...state,
                 operatorState: false
             }
+
         case 'TRUE_LIFECYCLE':
             return {
                 ...state,
@@ -70,6 +73,7 @@ export const Reducer = (state = initialState, action: Action)=>{
                 ...state,
                 lifeCycle: false
             }
+
         case 'TRUE_START':
             return {
                  ...state,
