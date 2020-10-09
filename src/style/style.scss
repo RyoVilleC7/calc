@@ -94,25 +94,33 @@ body {
             align-items: flex-end;
             flex-direction: column;
 
+            .cw_box {
+                width: 100%;
+                overflow-x: scroll;
+                overflow-y: hidden;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+
+                &::-webkit-scrollbar {
+                    display:none;
+                }
+
+                &:nth-child(2) {
+
+                    p {
+                        font-size: 7rem;
+                    }
+                }
+
             p {
                 color: $wht;
                 margin: 0;
                 text-align: right;
+                font-size: 3.7rem;
                 line-height: 1.2em;
-            
-    
-                &:first-child {
-                    font-size: 3.7rem;
-                }
-    
-                &:nth-child(2){
-                    font-size: 7rem;
-                }
-
-                &::-webkit-scrollbar {  /* Chrome, Safari 対応 */
-                    display:none;
-                }
             }
+
+        }
         }
     }
 
@@ -221,25 +229,34 @@ body {
                 justify-content: center;
                 align-items: flex-end;
                 flex-direction: column;
+
+                .cw_box {
+                    width: 100%;
+                    overflow-x: scroll;
+                    overflow-y: hidden;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+    
+                    &::-webkit-scrollbar {
+                        display:none;
+                    }
+    
+                    &:nth-child(2) {
+    
+                        p {
+                            font-size: 4rem;
+                        }
+                    }
     
                 p {
                     color: $wht;
                     margin: 0;
                     text-align: right;
-                
-        
-                    &:first-child {
-                        font-size: 2rem;
-                    }
-        
-                    &:nth-child(2){
-                        font-size:3rem;
-                    }
-    
-                    &::-webkit-scrollbar {  /* Chrome, Safari 対応 */
-                        display:none;
-                    }
+                    font-size: 2.5rem;
+                    line-height: 1.2em;
                 }
+    
+            }
             }
         }
     
@@ -258,12 +275,11 @@ body {
                 border-radius: 50%;
                 margin: 0 20px 20px 0;
                 cursor: pointer;
-                position: relative;
                 transition: .1s;
                 color: #fff;
                 font-size: 3rem;
                 transition: .3s;
-                padding: none;
+                padding: 0;
             }
     
             .l_content {
@@ -303,6 +319,11 @@ body {
                             border-radius: 80px;
                             text-align: left;
                             padding-left: 15px;
+                            margin: 0 20px 0 0;
+                        }
+
+                        &:last-child {
+                            margin: 0 20px 0 0;
                         }
                     }
                 }
