@@ -13,13 +13,13 @@ import store from './store/store';
 import { Provider } from 'react-redux';
 
 //Outside Components
-import Calculater from './component/basic/calculater';
+import Calculator from './component/basic/calculator';
 
 /////////////////////////////////////////////////////////////////
 
 ReactDOM.render(
     <Provider store={store}>
-        <Calculater />
+        <Calculator />
     </Provider>,
     document.querySelector('#app')
 );
