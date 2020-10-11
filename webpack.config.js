@@ -19,6 +19,10 @@ module.exports = {
         open: true
     },
 
+    performance: {
+      hints: false
+    },
+
     module: {
 
       rules: [
@@ -44,4 +48,5 @@ module.exports = {
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".json"]
     }
+
   };
